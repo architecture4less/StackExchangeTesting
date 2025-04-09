@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="TestingStackExchangeSuite" verbose="1">
+    <test name="AnonUserTestCase"><classes><class name="setesting.suite.AnonUserTestCase"/></classes></test>
+    <test name="LoginTestCase"><classes><class name="setesting.suite.SignInOutTestCase"/></classes></test>
+    <test name="ProfileTestCase"><classes><class name="setesting.suite.ProfileTestCase"/></classes></test>
+    <test name="SearchTestCase"><classes><class name="setesting.suite.SearchTestCase"/></classes></test>
+    <test name="InteractionTestCase"><classes><class name="setesting.suite.InteractionTestCase"/></classes></test>
+    <test name="NewPostTestCase"><classes><class name="setesting.suite.NewPostTestCase"/></classes></test>
+    <test name="ResponsivenessTestCase"><classes><class name="setesting.suite.ResponsivenessTestCase"/></classes></test>
+    <test name="AccessibilityTestCase"><classes><class name="setesting.suite.AccessibilityTestCase"/></classes></test>
+</suite>
