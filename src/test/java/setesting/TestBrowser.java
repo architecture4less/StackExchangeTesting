@@ -16,14 +16,14 @@ import java.util.Map;
  */
 public enum TestBrowser {
 
-    CHROME("chrome", Path.of("./webdrivers/chromedriver-win64/chromedriver.exe")) {
+    CHROME("chrome", TestUtils.RUN_DIR.resolve("src/test/resources/webdrivers/chromedriver-win64/chromedriver.exe")) {
         @Override
         public WebDriver open() {
             ChromeOptions opts = new ChromeOptions();
             return new ChromeDriver(opts);
         }
     },
-    EDGE("edge", Path.of("./webdrivers/edgedriver_win64/msedgedriver.exe")) {
+    EDGE("edge", TestUtils.RUN_DIR.resolve("src/test/resources/webdrivers/edgedriver-win64/msedgedriver.exe")) {
         @Override
         public WebDriver open() {
             EdgeOptions opts = new EdgeOptions();
@@ -34,14 +34,14 @@ public enum TestBrowser {
             return new EdgeDriver(opts);
         }
     },
-    FIREFOX("gecko", Path.of("./webdrivers/geckodriver-v0.35.0-win64/geckodriver.exe")) {
+    FIREFOX("gecko", TestUtils.RUN_DIR.resolve("src/test/resources/webdrivers/geckodriver-win64/geckodriver.exe")) {
         @Override
         public WebDriver open() {
             FirefoxOptions opts = new FirefoxOptions();
             return new FirefoxDriver(opts);
         }
     },
-    OPERA("opera", Path.of("./webdrivers/operadriver_win64/operadriver.exe")) {
+    OPERA("opera", TestUtils.RUN_DIR.resolve("src/test/resources/webdrivers/operadriver-win64/operadriver.exe")) {
         @Override
         public WebDriver open() {
             ChromeOptions opts = new ChromeOptions();

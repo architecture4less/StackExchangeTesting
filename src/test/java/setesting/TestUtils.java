@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * Utility functions for the Stack Exchange testing suite.
  */
-final class TestUtils {
+public final class TestUtils {
     private TestUtils() {}
 
     public static final Path RUN_DIR = Path.of("").toAbsolutePath();
