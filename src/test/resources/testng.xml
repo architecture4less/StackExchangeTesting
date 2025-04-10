@@ -2,7 +2,7 @@
 
 <suite name="TestingStackExchangeSuite" verbose="1">
     <test name="AnonUserTestCase"><classes><class name="setesting.suite.AnonUserTestCase"/></classes></test>
-    <test name="LoginTestCase"><classes><class name="setesting.suite.SignInOutTestCase"/></classes></test>
+    <test name="SignInOutTestCase"><classes><class name="setesting.suite.SignInOutTestCase"/></classes></test>
     <test name="ProfileTestCase"><classes><class name="setesting.suite.ProfileTestCase"/></classes></test>
     <test name="SearchTestCase"><classes><class name="setesting.suite.SearchTestCase"/></classes></test>
     <test name="InteractionTestCase"><classes><class name="setesting.suite.InteractionTestCase"/></classes></test>
