@@ -4,6 +4,7 @@ run-test/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/src/test/resources/credentials.properties
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
