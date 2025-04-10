@@ -9,8 +9,10 @@ import org.openqa.selenium.io.FileHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Utility functions for the Stack Exchange testing suite.
@@ -36,6 +38,9 @@ public final class TestUtils {
             File tempFile = screenshotTaker.getScreenshotAs(OutputType.FILE);
             File saveFile = saveFolder.resolve(tempFile.getName()).toFile();
             try {
+                if (!Files.exists(saveFolder)) {
+                    Files.createDirectories(saveFolder);
+                }
                 FileHandler.copy(tempFile, saveFile);
                 return saveFile;
             }
@@ -53,6 +58,17 @@ public final class TestUtils {
                 driver.switchTo().window(handle);
             }
         }
+    }
+
+    public static Properties getProperties(String fileName) {
+        Properties props = new Properties();
+        try {
+            props.load(Files.newBufferedReader(TestUtils.RUN_DIR.resolve("src/test/resources/" + fileName)));
+        }
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return props;
     }
 
     public static void sleep(double seconds) {
