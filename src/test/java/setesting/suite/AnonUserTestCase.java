@@ -5,11 +5,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import setesting.TestBrowser;
 import setesting.TestListener;
+import setesting.TestSteps;
 
 import java.util.Optional;
 
@@ -22,6 +25,16 @@ import static setesting.TestUtils.sleep;
 public final class AnonUserTestCase {
     private AnonUserTestCase() {}
 
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate the presence of important elements on the homepage.
      */
@@ -32,7 +45,7 @@ public final class AnonUserTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             asserter.assertFalse(driver.findElements(By.cssSelector("a.s-topbar--logo[href=\"https://stackexchange.com\"]")).isEmpty(), "home logo should be present");
             asserter.assertFalse(driver.findElements(By.linkText("Log in")).isEmpty(), "login button should be present");
@@ -55,7 +68,7 @@ public final class AnonUserTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("Tour")).click();
             sleep(2.0);
@@ -92,11 +105,11 @@ public final class AnonUserTestCase {
      */
     @Test(priority = 3, description = "The 'contact us' form displays a popover that can be closed")
     public static void contactFormTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("About Us")).click();
             sleep(2.0);
@@ -126,11 +139,11 @@ public final class AnonUserTestCase {
      */
     @Test(priority = 4, description = "Search for a moderator's profile in the 'about us' page")
     public static void moderatorSearchTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("About Us")).click();
             sleep(2.0);
@@ -162,7 +175,7 @@ public final class AnonUserTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.cssSelector("a.js-site-switcher-button")).click();
             sleep(2.0);

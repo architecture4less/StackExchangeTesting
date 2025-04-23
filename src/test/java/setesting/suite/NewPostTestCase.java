@@ -3,10 +3,13 @@ package setesting.suite;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import setesting.TestBrowser;
@@ -24,19 +27,42 @@ import static setesting.TestUtils.sleep;
 public final class NewPostTestCase {
     private NewPostTestCase() {}
 
+    private static void closeOnboardingPopup(WebDriver driver) {
+        // account for the new 'what to expect' onboarding popup
+        try {
+            driver.findElement(By.cssSelector("button.js-modal-close")).click();
+            sleep(1.0);
+        }
+        catch (NoSuchElementException ex) {
+            // pass
+        }
+    }
+
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate text inputting in rich text mode.
      */
     @Test(priority = 26, description = "Input text in rich text mode")
     public static void inputRichTextTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://stackoverflow.com");
             driver.findElement(By.partialLinkText("Ask Question")).click();
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
+
+            closeOnboardingPopup(driver);
 
             driver.findElement(By.id("title")).sendKeys("Test");
             sleep(1.0);
@@ -85,14 +111,16 @@ public final class NewPostTestCase {
      */
     @Test(priority = 27, description = "Input text in markdown mode")
     public static void inputMarkdownTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://stackoverflow.com");
             driver.findElement(By.partialLinkText("Ask Question")).click();
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
+
+            closeOnboardingPopup(driver);
 
             driver.findElement(By.id("title")).sendKeys("Test");
             sleep(1.0);

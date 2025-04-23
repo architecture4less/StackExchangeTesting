@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import setesting.TestBrowser;
@@ -23,6 +25,16 @@ import static setesting.TestUtils.sleep;
 public final class ProfileTestCase {
     private ProfileTestCase() {}
 
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate the ability to view the activity of another user.
      */
@@ -33,21 +45,10 @@ public final class ProfileTestCase {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
-            driver.get("https://stackexchange.com/");
-            sleep(1.0);
-
-            driver.findElement(By.linkText("Meta")).click();
-            sleep(1.0);
-
             driver.findElement(By.id("user-profile-button")).click();
-            sleep(1.0);
+            TestSteps.doCaptcha(driver);
 
-            {
-                WebElement element = driver.findElement(By.id("user-panel-accounts"));
-                new Actions(driver).scrollToElement(element).scrollByAmount(0, 200).perform();
-                sleep(1.0);
-            }
-            driver.findElement(By.partialLinkText("View all 9 accounts")).click();
+            driver.findElement(By.linkText("accounts")).click();
             sleep(1.0);
         }
         finally {
@@ -60,13 +61,13 @@ public final class ProfileTestCase {
      */
     @Test(priority = 12, description = "Open the account's latest notification")
     public static void viewNotifsTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://stackexchange.com/");
-            sleep(1.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.cssSelector("a.js-inbox-button")).click();
             sleep(1.0);
@@ -90,31 +91,28 @@ public final class ProfileTestCase {
      */
     @Test(priority = 13, description = "Update the account's profile picture and bio")
     public static void updateProfileTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.findElement(By.linkText("Meta")).click();
-            sleep(1.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.id("user-profile-button")).click();
-            sleep(1.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.partialLinkText("Edit profile")).click();
             sleep(1.0);
-
             {
                 WebElement nameInput = driver.findElement(By.id("displayName"));
                 nameInput.clear();
                 sleep(1.0);
 
-                // the display name may only be changed once per month
-                // String nameText = "Jared O'Toole";
-                // nameInput.sendKeys(nameText);
-                // TestUtils.sleep(1.0);
+                String nameText = "Jared O'Toole";
+                nameInput.sendKeys(nameText);
+                sleep(1.0);
             }
-
             driver.findElement(By.id("change-picture")).click();
             sleep(1.0);
 
@@ -150,7 +148,6 @@ public final class ProfileTestCase {
                 saveButton.click();
                 sleep(1.0);
             }
-
             saveScreenshot(driver, RUN_DIR.resolve("run-test/updateProfileTest"));
             sleep(4.0);
 
@@ -169,8 +166,9 @@ public final class ProfileTestCase {
 
                 // the display name may only be changed once per month
                 // String nameText = "user1730939";
-                // nameInput.sendKeys(nameText);
-                // TestUtils.sleep(1.0);
+                String nameText = "Jared O'Toole";
+                nameInput.sendKeys(nameText);
+                sleep(1.0);
             }
             {
                 WebElement bioInput = driver.findElement(By.id("wmd-input"));
@@ -199,16 +197,16 @@ public final class ProfileTestCase {
      */
     @Test(priority = 14, description = "Update the account's hidden communities")
     public static void updateHiddenSitesTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://stackoverflow.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.id("user-profile-button")).click();
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("Settings")).click();
             sleep(1.0);
@@ -242,16 +240,16 @@ public final class ProfileTestCase {
     @Test(priority = 15, description = "Update the account's site preferences")
     public static void updatePrefsTest() {
         Path screenshotFolder = Path.of("run-test/updatePrefsTest");
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://stackoverflow.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.id("user-profile-button")).click();
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("Settings")).click();
             sleep(1.0);

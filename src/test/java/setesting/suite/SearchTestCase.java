@@ -6,10 +6,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import setesting.TestBrowser;
 import setesting.TestListener;
+import setesting.TestSteps;
 
 import java.util.Optional;
 
@@ -22,15 +25,26 @@ import static setesting.TestUtils.sleep;
 public final class SearchTestCase {
     private SearchTestCase() {}
 
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate the ability to search for and view a question.
      */
     @Test(priority = 16, description = "Search for and view a question")
     public static void searchQuestionTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.OPERA.open();
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/search");
+            TestSteps.doCaptcha(driver);
             {
                 WebElement searchBar = driver.findElement(By.cssSelector("form#bigsearch input"));
                 String searchText = "xpath";
@@ -38,10 +52,10 @@ public final class SearchTestCase {
                 sleep(1.0);
 
                 searchBar.sendKeys(Keys.RETURN);
-                sleep(1.0);
+                TestSteps.doCaptcha(driver);
             }
 
-            driver.findElement(By.cssSelector("div.search-results:nth-child(1) a")).click();
+            driver.findElements(By.cssSelector("div.search-results div.result-link a")).get(0).click();
             sleep(2.0);
         }
         finally {
@@ -54,7 +68,7 @@ public final class SearchTestCase {
      */
     @Test(priority = 17, description = "Search for and view a community")
     public static void searchCommunityTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/sites?view=list#oldest");
@@ -79,10 +93,11 @@ public final class SearchTestCase {
      */
     @Test(priority = 18, description = "Search for and view a user")
     public static void searchUserTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.FIREFOX.open();
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/search");
+            TestSteps.doCaptcha(driver);
             {
                 WebElement searchBar = driver.findElement(By.cssSelector("form#bigsearch input"));
                 String searchText = "user:100";
@@ -90,10 +105,10 @@ public final class SearchTestCase {
                 sleep(1.0);
 
                 searchBar.sendKeys(Keys.RETURN);
-                sleep(1.0);
+                TestSteps.doCaptcha(driver);
             }
 
-            driver.findElement(By.cssSelector("div.search-results:nth-child(1) a")).click();
+            driver.findElements(By.cssSelector("div.search-results div.result-link a")).get(0).click();
             sleep(2.0);
         }
         finally {
@@ -110,18 +125,19 @@ public final class SearchTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
+            TestSteps.doCaptcha(driver);
             {
                 WebElement nextButton = driver.findElement(By.cssSelector("div.pager span.next"));
                 new Actions(driver).scrollToElement(nextButton).scrollByAmount(0, 200).perform();
-                sleep(2.0);
+                sleep(1.0);
 
                 nextButton.click();
-                sleep(2.0);
+                sleep(1.0);
             }
             {
                 WebElement nextButton = driver.findElement(By.cssSelector("div.pager span.next"));
                 new Actions(driver).scrollToElement(nextButton).scrollByAmount(0, 200).perform();
-                sleep(2.0);
+                sleep(1.0);
             }
             String currentUrl = Optional.ofNullable(driver.getCurrentUrl()).orElse("");
             Assert.assertTrue(currentUrl.contains("page=2"), "expected url to have 'page=2'");
@@ -140,18 +156,19 @@ public final class SearchTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
+            TestSteps.doCaptcha(driver);
             {
                 WebElement fifteenButton = driver.findElement(By.partialLinkText("15"));
                 new Actions(driver).scrollToElement(fifteenButton).scrollByAmount(0, 200).perform();
-                sleep(2.0);
+                sleep(1.0);
 
                 fifteenButton.click();
-                sleep(2.0);
+                sleep(1.0);
             }
             {
                 WebElement fifteenButton = driver.findElement(By.partialLinkText("15"));
                 new Actions(driver).scrollToElement(fifteenButton).scrollByAmount(0, 200).perform();
-                sleep(2.0);
+                sleep(1.0);
             }
             String currentUrl = Optional.ofNullable(driver.getCurrentUrl()).orElse("");
             Assert.assertTrue(currentUrl.contains("pagesize=15"), "expected url to have 'pagesize=15'");

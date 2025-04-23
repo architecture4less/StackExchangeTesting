@@ -6,6 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -31,32 +33,48 @@ public final class InteractionTestCase {
         }
     }
 
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate the ability to upvote and down-vote.
      */
     @Test(priority = 21, description = "Upvote and down-vote posts")
     public static void ratePostTest() {
         SoftAssert asserter = new SoftAssert();
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://meta.stackexchange.com/questions/57682/how-should-sockpuppets-be-handled-on-stack-exchange/57685");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
-            int initialVoteCount = getVoteCountOfPage(driver);
+            int voteCount = getVoteCountOfPage(driver);
 
             driver.findElement(By.cssSelector(".js-vote-up-btn")).click();
+            asserter.assertEquals(getVoteCountOfPage(driver), voteCount++, "expected up-voted count to be one greater");
             sleep(3.0);
-            asserter.assertEquals(getVoteCountOfPage(driver), initialVoteCount + 1, "expected up-voted count to be one greater");
 
+            // handle the case we dont have enough reputation to upvote
+            {
+                try {
+                    driver.findElement(By.xpath("//button[text()=\"Not now\"]")).click();
+                }
+                catch (NoSuchElementException ex) {
+                    voteCount--;
+                }
+            }
             driver.findElement(By.cssSelector(".js-vote-down-btn")).click();
+            asserter.assertEquals(getVoteCountOfPage(driver), voteCount--, "expected down-voted count to be one less");
             sleep(3.0);
-            asserter.assertEquals(getVoteCountOfPage(driver), initialVoteCount - 1, "expected down-voted count to be one less");
-
-            driver.findElement(By.cssSelector(".js-vote-down-btn")).click();
-            sleep(1.0);
 
             asserter.assertAll();
         }
@@ -74,7 +92,7 @@ public final class InteractionTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackoverflow.com/questions/12293158/page-scroll-up-or-down-in-selenium-webdriver-selenium-2-using-java");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.linkText("Share")).click();
             sleep(2.0);
@@ -103,19 +121,19 @@ public final class InteractionTestCase {
      */
     @Test(priority = 24, description = "Save a question and manage saved posts")
     public static void bookmarkPostTest() {
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().maximize();
             TestSteps.doLogin(driver);
 
             driver.get("https://meta.stackexchange.com/questions/57682/how-should-sockpuppets-be-handled-on-stack-exchange/57685");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.cssSelector(".js-saves-btn")).click();
             sleep(2.0);
 
             driver.findElement(By.id("user-profile-button")).click();
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.partialLinkText("Saves")).click();
             sleep(2.0);
@@ -140,7 +158,7 @@ public final class InteractionTestCase {
         try {
             driver.manage().window().maximize();
             driver.get("https://stackoverflow.com/questions/45511841/xpath-get-text-after-first-html-tag");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             new Actions(driver).scrollToElement(driver.findElement(By.id("h-linked"))).scrollByAmount(0, 200).perform();
             sleep(1.0);

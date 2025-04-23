@@ -5,11 +5,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import setesting.TestBrowser;
 import setesting.TestListener;
+import setesting.TestSteps;
 
 import static setesting.TestUtils.RUN_DIR;
 import static setesting.TestUtils.saveScreenshot;
@@ -22,6 +25,16 @@ import static setesting.TestUtils.sleep;
 public final class AccessibilityTestCase {
     private AccessibilityTestCase() {}
 
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
+
     /**
      * Validate that site content is screen reader friendly.
      */
@@ -33,6 +46,8 @@ public final class AccessibilityTestCase {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
             sleep(2.0);
+            TestSteps.doCaptcha(driver);
+
             for (WebElement element : driver.findElements(By.cssSelector("button, input, .s-navigation, nav"))) {
                 String title = element.getTagName() + " at " + element.getLocation();
                 String ariaLabel = element.getDomAttribute("aria-label");
@@ -57,6 +72,8 @@ public final class AccessibilityTestCase {
             driver.manage().window().maximize();
             driver.get("https://stackexchange.com/");
             sleep(2.0);
+            TestSteps.doCaptcha(driver);
+
             for (WebElement element : driver.findElements(By.cssSelector("img"))) {
                 String title = element.getTagName() + " at " + element.getLocation();
                 String altText = element.getDomAttribute("alt");
@@ -89,6 +106,8 @@ public final class AccessibilityTestCase {
             // driver.manage().window().maximize();
             // driver.get("https://stackexchange.com/");
             // sleep(2.0);
+            // TestSteps.doCaptcha(driver);
+            //
             // for (WebElement element : driver.findElements(By.cssSelector("img"))) {
             //     String title = element.getTagName() + " at " + element.getLocation();
             //     String altText = element.getDomAttribute("alt");
@@ -111,6 +130,8 @@ public final class AccessibilityTestCase {
                 driver.get("https://stackexchange.com/");
                 driver.manage().window().maximize();
                 sleep(1.0);
+                TestSteps.doCaptcha(driver);
+
                 LoggerFactory.getLogger("browserConsistencyTest").info(browser.name());
                 saveScreenshot(driver, RUN_DIR.resolve("run-test/browserConsistencyTest/" + browser.name().toLowerCase()));
             }

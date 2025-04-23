@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -22,6 +24,16 @@ import static setesting.TestUtils.sleep;
 @Listeners(TestListener.class)
 public final class ResponsivenessTestCase {
     private ResponsivenessTestCase() {}
+
+    @AfterMethod
+    private static void waitAfterEach() {
+        TestSteps.limitTestSpeed();
+    }
+
+    @AfterClass
+    private static void waitAfterAll() {
+        TestSteps.limitTestCaseSpeed();
+    }
 
     /**
      * Validate the homepage renders in the time listed on the performance page.
@@ -41,7 +53,7 @@ public final class ResponsivenessTestCase {
             sleep(2.0);
 
             driver.get("https://stackexchange.com/performance");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             new Actions(driver).scrollToElement(driver.findElement(By.id("homeStat"))).scrollByAmount(0, 200).perform();
             sleep(2.0);
@@ -70,7 +82,7 @@ public final class ResponsivenessTestCase {
             try {
                 driver.manage().window().setSize(browserSize);
                 driver.get("https://stackexchange.com/");
-                sleep(2.0);
+                TestSteps.doCaptcha(driver);
 
                 WebElement mainArea = driver.findElement(By.id("mainArea"));
 
@@ -104,7 +116,7 @@ public final class ResponsivenessTestCase {
             try {
                 driver.manage().window().setSize(browserSize);
                 driver.get("https://stackexchange.com/");
-                sleep(2.0);
+                TestSteps.doCaptcha(driver);
 
                 driver.findElement(By.linkText("Log in")).click();
                 sleep(2.0);
@@ -143,7 +155,7 @@ public final class ResponsivenessTestCase {
             try {
                 driver.manage().window().setSize(browserSize);
                 driver.get("https://stackexchange.com/");
-                sleep(2.0);
+                TestSteps.doCaptcha(driver);
 
                 driver.findElement(By.cssSelector("a.js-site-switcher-button")).click();
                 sleep(2.0);
@@ -170,13 +182,13 @@ public final class ResponsivenessTestCase {
     @Test(priority = 35, description = "Use Text editor in a smaller browser window")
     public static void smallTextEditorTest() {
         SoftAssert asserter = new SoftAssert();
-        WebDriver driver = TestBrowser.EDGE.open();
+        WebDriver driver = TestBrowser.CHROME.open();
         try {
             driver.manage().window().setSize(new Dimension(960, 540));
             TestSteps.doLogin(driver);
 
             driver.get("https://stackoverflow.com/");
-            sleep(2.0);
+            TestSteps.doCaptcha(driver);
 
             driver.findElement(By.partialLinkText("Ask Question")).click();
             sleep(2.0);
